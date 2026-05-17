@@ -1,5 +1,7 @@
 import Groq from "groq-sdk";
-import {tavily} from "@tavily/core";
+import { tavily } from "@tavily/core";
+import NodeCache from "node-cache";
+
 
 const tvly = tavily({ apiKey: process.env.TAVILY_API_KEY });
 
@@ -7,19 +9,48 @@ const groq = new Groq({
   apiKey: process.env.GROQ_API_KEY,
 });
 
-export async function generate(userMessage) {
-  const messages = [
+const cache = new NodeCache({ stdTTL: 60 * 60 * 24 });  //24 hours
+
+
+export async function generate(userMessage, threadId) {
+  const baseMessages = [
     {
       role: "system",
-      content: `You are a smart personal assistant that helps answer questions and solve problems.
-You have access to the following tools:
+      content: `You are a smart personal assistant.
+      If you know the answer, answer directly.
+      If you need to search the web, use the webSearch tool.
+        You have access to the following tools:
+      1. webSearch({ query }) -> Search the web for information relevant to the query.
+      Decide if you need to search the web or not.
+      Do not use the webSearch tool unless it is necessary.
+      Respond only in the language the user used to ask the question.
 
-1. webSearch({ query }) -> Search the web for information relevant to the query.
+      Example:
+
+      User: what is the capital of india?
+      Assistant: The capital of India is New Delhi.
+
+      User: what is the current time in india?
+      Assistant: 
+        webSearch({ query: "current time in india" })
+
+      User: what is weather of varanasi?
+      Assistant: 
+        webSearch({ query: "weather of varanasi" })
+
+      User: explain binary search
+      Assistant: Binary search is a search algorithm that is used to search for a specific value in a sorted array.
+
+      User: tell me the latest IT news
+      Assistant: 
+        webSearch({ query: "latest IT news" })
 
 Current date and time: ${new Date().toLocaleString()}
 `,
     },
   ];
+
+  const messages = cache.get(threadId) ?? baseMessages;
 
   messages.push({
     role: "user",
@@ -56,14 +87,16 @@ Current date and time: ${new Date().toLocaleString()}
       tool_choice: "auto",
     });
 
-    const assistantMessage = completions.choices[0].message;
 
-    messages.push(assistantMessage);
+    messages.push(completions.choices[0].message);
 
-    const toolCalls = assistantMessage.tool_calls;
+    const toolCalls = completions.choices[0].message.tool_calls;
 
     if (!toolCalls) {
-      return assistantMessage.content;
+      //here we end the chatbot response
+      cache.set(threadId, messages);
+      console.log(cache);
+      return completions.choices[0].message.content;
     }
 
     for (const tool of toolCalls) {
