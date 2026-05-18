@@ -20,13 +20,13 @@ export default function ChatInput({ value, onChange, onSend, isLoading }) {
 
   return (
     <div className="px-4 pb-5 pt-2 bg-[#000]">
-      <div className="max-w-2xl mx-auto">
+      <div className="max-w-4xl mx-auto">
         {/* Input pill */}
         <div className="flex items-end gap-3 bg-[#1e1e1e] rounded-[28px] px-4 py-3
           border border-white/[0.08] focus-within:border-white/20 transition-colors duration-200">
 
           {/* Plus button */}
-          <button
+          {/* <button
             id="attach-btn"
             title="Add attachment"
             className="shrink-0 w-8 h-8 rounded-full flex items-center justify-center
@@ -36,7 +36,7 @@ export default function ChatInput({ value, onChange, onSend, isLoading }) {
               fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
             </svg>
-          </button>
+          </button> */}
 
           {/* Textarea */}
           <textarea
@@ -45,7 +45,7 @@ export default function ChatInput({ value, onChange, onSend, isLoading }) {
             value={value}
             onChange={(e) => onChange(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="Ask anything"
+            placeholder="Ask me anything"
             rows={1}
             disabled={isLoading}
             className="flex-1 bg-transparent text-[15px] text-[#e8eaed] placeholder-[#5f6368]
@@ -55,7 +55,7 @@ export default function ChatInput({ value, onChange, onSend, isLoading }) {
           {/* Right buttons */}
           <div className="flex items-center gap-2 shrink-0 mb-0.5">
             {/* Mic */}
-            <button
+            {/* <button
               id="mic-btn"
               title="Use microphone"
               className="w-8 h-8 rounded-full flex items-center justify-center
@@ -68,7 +68,7 @@ export default function ChatInput({ value, onChange, onSend, isLoading }) {
                 <line x1="12" y1="19" x2="12" y2="23" />
                 <line x1="8" y1="23" x2="16" y2="23" />
               </svg>
-            </button>
+            </button> */}
 
             {/* Send / stop */}
             <button

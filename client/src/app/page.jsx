@@ -131,7 +131,7 @@ export default function App() {
             <WelcomeScreen onSuggestion={setInputValue} />
           </div>
         ) : (
-          <div className="max-w-2xl mx-auto w-full py-4">
+          <div className="max-w-5xl mx-auto w-full py-4">
             {messages.map((msg, i) => (
               <ChatMessage key={i} role={msg.role} content={msg.content} />
             ))}
