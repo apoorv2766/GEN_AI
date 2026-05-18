@@ -57,7 +57,15 @@ Current date and time: ${new Date().toLocaleString()}
     content: userMessage,
   });
 
+  const MAX_RETRIES = 10;
+  let count = 0
+
   while (true) {
+    if (count > MAX_RETRIES) {
+      return "I could not find the result. Please try again."
+    }
+
+    count++;
     const completions = await groq.chat.completions.create({
       model: "llama-3.3-70b-versatile",
       messages,

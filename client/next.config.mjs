@@ -4,7 +4,7 @@ const nextConfig = {
     return [
       {
         source: '/chat',
-        destination: 'http://localhost:3001/chat',
+        destination: process.env.BACKEND_URL ? `${process.env.BACKEND_URL}/chat` : 'http://localhost:3001/chat',
       },
     ]
   },
